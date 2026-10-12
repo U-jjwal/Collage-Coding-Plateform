@@ -1,3 +1,5 @@
+const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -16,7 +18,11 @@ const studentRoutes = require('./routes/studentRoutes');
 const app = express();
 
 // ─── Security Middleware ───────────────────────────────────────────────────
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false, // Required for Monaco Editor web workers and font assets
+  })
+);
 
 app.use(
   cors({
@@ -57,6 +63,27 @@ app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/teacher', teacherRoutes);
 app.use('/api/v1/student', studentRoutes);
 app.use('/api/v1', studentRoutes);
+
+// ─── Frontend Static Files (Single-Host Production Deployment) ─────────────
+const distCandidates = [
+  path.join(__dirname, '../public'),
+  path.join(__dirname, '../../public'),
+  path.join(__dirname, '../../client/dist'),
+];
+
+const clientDistPath = distCandidates.find((dir) => fs.existsSync(dir));
+
+if (clientDistPath) {
+  app.use(express.static(clientDistPath));
+
+  // SPA fallback for all frontend routes (excluding /api and /health)
+  app.use((req, res, next) => {
+    if (req.method === 'GET' && !req.originalUrl.startsWith('/api') && !req.originalUrl.startsWith('/health')) {
+      return res.sendFile(path.join(clientDistPath, 'index.html'));
+    }
+    next();
+  });
+}
 
 // ─── 404 Handler ───────────────────────────────────────────────────────────
 app.use((req, res, next) => {
