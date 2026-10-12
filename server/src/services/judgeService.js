@@ -98,7 +98,7 @@ const executeLocally = async (sourceCode, language, stdin = '', timeLimitMs = 50
       // Compile
       try {
         await new Promise((resolve, reject) => {
-          exec(`javac ${className}.java`, { cwd: tmpDir, timeout: 8000 }, (err, stdout, stderr) => {
+          exec(`javac ${className}.java`, { cwd: tmpDir, timeout: 8000, env: process.env }, (err, stdout, stderr) => {
             if (err) return reject({ compile: true, stderr: stderr || err.message });
             resolve();
           });
@@ -179,7 +179,7 @@ const runProcessWithStdin = (command, args, cwd, stdin, timeoutMs) => {
     let stderr = '';
     let timedOut = false;
 
-    const child = spawn(command, args, { cwd });
+    const child = spawn(command, args, { cwd, env: process.env });
 
     const timer = setTimeout(() => {
       timedOut = true;

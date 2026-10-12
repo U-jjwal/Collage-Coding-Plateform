@@ -17,6 +17,9 @@ const studentRoutes = require('./routes/studentRoutes');
 
 const app = express();
 
+// Trust reverse proxy (Railway, Render, NGINX) for accurate client IP and rate limiting
+app.set('trust proxy', 1);
+
 // ─── Security Middleware ───────────────────────────────────────────────────
 app.use(
   helmet({

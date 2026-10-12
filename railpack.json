@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "buildAptPackages": [
+    "...",
+    "default-jdk",
+    "python3",
+    "g++",
+    "build-essential"
+  ],
+  "deploy": {
+    "aptPackages": [
+      "...",
+      "default-jdk",
+      "python3",
+      "g++",
+      "build-essential"
+    ]
+  }
+}
