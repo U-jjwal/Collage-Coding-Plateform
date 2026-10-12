@@ -95,10 +95,10 @@ const executeLocally = async (sourceCode, language, stdin = '', timeLimitMs = 50
       const filePath = path.join(tmpDir, `${className}.java`);
       fs.writeFileSync(filePath, sourceCode);
 
-      // Compile with --release 21 for cross-version compatibility
+      // Compile
       try {
         await new Promise((resolve, reject) => {
-          exec(`javac --release 21 ${className}.java`, { cwd: tmpDir, timeout: 8000 }, (err, stdout, stderr) => {
+          exec(`javac ${className}.java`, { cwd: tmpDir, timeout: 8000 }, (err, stdout, stderr) => {
             if (err) return reject({ compile: true, stderr: stderr || err.message });
             resolve();
           });

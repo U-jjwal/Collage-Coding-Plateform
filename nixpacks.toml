@@ -1,0 +1,7 @@
+# nixpacks.toml configuration for Railway
+# Ensures Java (JDK), Python, and GCC are installed alongside Node.js for sandboxed code execution
+
+providers = ["node"]
+
+[phases.setup]
+nixPkgs = ["...", "jdk", "python3", "gcc"]
